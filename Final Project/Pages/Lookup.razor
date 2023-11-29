@@ -4,16 +4,34 @@
 
 <h3>Spell Lookup</h3>
 In the input below, enter the name of the spell you wish to look up!<br />
-Spell Index: <input @bind=Indx/>
+For correct formatting, write the name of your spell in lowercase and with a - between spaces. <br />
+Spell Index: <input @bind=Indx/><br />
+<button @onclick=GetSpell>Find</button>
 
-@for (int i = 0; i < 1; i++)
-{
-    <span>@</span>
-}
+<br /><br />
+<span>
+    @name<br />
+    @level <br />
+    @description <br />
+    @range <br />
+    @duration <br />
+    @concentration <br />
+    @action <br />
+</span><br />
+
 
 @code {
-   
+
     string Indx = "";
+
+    string name = "";
+    string level;
+    string description = "";
+    string range;
+    string duration;
+    string concentration;
+    string action;
+
     private HttpClient httpClient;
 
     public Lookup()
@@ -23,24 +41,23 @@ Spell Index: <input @bind=Indx/>
 
     
 
-    public async Task<string> GetSpell(string Indx)
+    public async Task<string> GetSpell()
     {
         
 
         var apiResponse = await httpClient.GetFromJsonAsync<JsonElement>($"https://www.dnd5eapi.co/api/spells/{Indx}");
 
-        string name = $"{apiResponse.GetProperty("name")}";
-        string description = $"{apiResponse.GetProperty("desc")}";
-        string range = $"The range of the spell is {apiResponse.GetProperty("range")}";
-        string duration = $"Duration: {apiResponse.GetProperty("duration")}";
-        string action = $"Casting time: {apiResponse.GetProperty("casting_time")}";
+        name = $"{apiResponse.GetProperty("name")}";
+        level = $"{apiResponse.GetProperty("level")}";
+        description = $"{apiResponse.GetProperty("desc")}";
+        range = $"Range: {apiResponse.GetProperty("range")}";
+        duration = $"Duration: {apiResponse.GetProperty("duration")}";
+        concentration = $"Concentration: {apiResponse.GetProperty("concentration")}";
+        action = $"Casting time: {apiResponse.GetProperty("casting_time")}";
 
 
-        WriteLine(name);
-        WriteLine(description);
-        WriteLine(range);
-        WriteLine(duration);
-        WriteLine(action);
+        
+        
 
         return name;
     }
