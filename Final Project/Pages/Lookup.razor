@@ -1,0 +1,47 @@
+﻿@page "/Lookup"
+@using System.Text.Json;
+@using System.Net.Http.Json;
+
+<h3>Spell Lookup</h3>
+In the input below, enter the name of the spell you wish to look up!<br />
+Spell Index: <input @bind=Indx/>
+
+@for (int i = 0; i < 1; i++)
+{
+    <span>@</span>
+}
+
+@code {
+   
+    string Indx = "";
+    private HttpClient httpClient;
+
+    public Lookup()
+    {
+        httpClient = new HttpClient();
+    }
+
+    
+
+    public async Task<string> GetSpell(string Indx)
+    {
+        
+
+        var apiResponse = await httpClient.GetFromJsonAsync<JsonElement>($"https://www.dnd5eapi.co/api/spells/{Indx}");
+
+        string name = $"{apiResponse.GetProperty("name")}";
+        string description = $"{apiResponse.GetProperty("desc")}";
+        string range = $"The range of the spell is {apiResponse.GetProperty("range")}";
+        string duration = $"Duration: {apiResponse.GetProperty("duration")}";
+        string action = $"Casting time: {apiResponse.GetProperty("casting_time")}";
+
+
+        WriteLine(name);
+        WriteLine(description);
+        WriteLine(range);
+        WriteLine(duration);
+        WriteLine(action);
+
+        return name;
+    }
+}

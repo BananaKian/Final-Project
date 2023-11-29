@@ -1,0 +1,17 @@
+﻿@page "/"
+@inject NavigationManager _nav
+
+
+<PageTitle>Spellbook Keeping</PageTitle>
+
+<h1>Greetings, Spellcaster!</h1>
+Click the below button to be taken to the Spell Lookup, where you can see a spell's information.<br />
+<button @onclick = "@(()=>_nav.NavigateTo("/Lookup"))">Lookup</button> <br />
+<br />
+Click the button below to navigate to your spellbook, where you can add and remove spells that you know. <br />
+<button @onclick="@(()=>_nav.NavigateTo("/Spellbook"))">Spellbook</button>
+
+
+
+
+
