@@ -41,24 +41,18 @@ Spell Index: <input @bind=Indx/><br />
 
     
 
-    public async Task<string> GetSpell()
-    {
-        
-
+    public async Task GetSpell()
+    {        
         var apiResponse = await httpClient.GetFromJsonAsync<JsonElement>($"https://www.dnd5eapi.co/api/spells/{Indx}");
 
         name = $"{apiResponse.GetProperty("name")}";
-        level = $"{apiResponse.GetProperty("level")}";
+        level = $"Level {apiResponse.GetProperty("level")}";
         description = $"{apiResponse.GetProperty("desc")}";
         range = $"Range: {apiResponse.GetProperty("range")}";
         duration = $"Duration: {apiResponse.GetProperty("duration")}";
         concentration = $"Concentration: {apiResponse.GetProperty("concentration")}";
-        action = $"Casting time: {apiResponse.GetProperty("casting_time")}";
+        action = $"Casting time: {apiResponse.GetProperty("casting_time")}";       
 
 
-        
-        
-
-        return name;
     }
 }

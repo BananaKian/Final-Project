@@ -1,6 +1,90 @@
 ﻿@page "/Spellbook"
+@using System.Text.Json;
+@using System.Net.Http.Json;
+@using Final_Project.Data;
+@using Final_Project.Services;
+@inject ISpellsService SpellList
+
 <h3>Spellbook</h3>
+In the box below, please enter the index of the spell you want added to your book! 
+For correct formatting, write the name of your spell in lowercase and with a - between spaces.<br />
+<input @bind=Indx/><br />
+<button @onclick=GetSpell>Add to Book</button><br />
+<br />
+If you want to remove a spell from your book, enter its name here! <br />
+<input @bind=deleteSpell/> <br />
+<button @onclick=DeleteSpell>Remove</button>
+
+
+<h3>Spells in Your Book</h3>
+@foreach (var spell in SpellList.Spellbook)
+{
+    <span>
+        @spell.Name <br>
+        @spell.Level <br>
+        @spell.Description<br>
+        @spell.Range<br>
+        @spell.Duration<br>
+        @spell.Concentration<br>
+        @spell.CastingTime<br>
+    </span>
+    <br />
+}
+
 
 @code {
+    string Indx = "";
 
+    string name = "";
+    string level;
+    string description = "";
+    string range;
+    string duration;
+    string concentration;
+    string action;
+
+    string deleteSpell = "";
+
+    private HttpClient httpClient;
+
+    public Spellbook()
+    {
+        httpClient = new HttpClient();
+    }
+
+    public async Task GetSpell()
+    {
+        var apiResponse = await httpClient.GetFromJsonAsync<JsonElement>($"https://www.dnd5eapi.co/api/spells/{Indx}");
+
+        name = $"{apiResponse.GetProperty("name")}";
+        level = $"Level {apiResponse.GetProperty("level")}";
+        description = $"{apiResponse.GetProperty("desc")}";
+        range = $"Range: {apiResponse.GetProperty("range")}";
+        duration = $"Duration: {apiResponse.GetProperty("duration")}";
+        concentration = $"Concentration: {apiResponse.GetProperty("concentration")}";
+        action = $"Casting time: {apiResponse.GetProperty("casting_time")}";
+
+        await AddSpell();
+    }
+
+    public async Task AddSpell()
+    {
+        SpellList.Spellbook.Add(new Data.Spell()
+        {
+            Name = name,
+            Level = level,
+            Description = description,
+            Range = range,
+            Duration = duration,
+            Concentration = concentration,
+            CastingTime = action
+        });
+    }
+
+    public async Task DeleteSpell()
+    {
+        Spell spell = SpellList.Spellbook.FirstOrDefault(b => b.Name == deleteSpell);
+
+        if (spell != null) SpellList.Spellbook.Remove(spell);
+    }
 }
